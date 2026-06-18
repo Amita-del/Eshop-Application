@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login | E-Shop</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="login-body">
+
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+
+        <!-- LEFT SIDE BRANDING -->
+        <div class="col-lg-6 d-none d-lg-flex login-left">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bold mb-4 animate-slide">
+                    Welcome Back 👋
+                </h1>
+                <p class="lead">
+                    Login to continue shopping the best deals.
+                </p>
+                <i class="bi bi-bag-heart-fill display-1 mt-4"></i>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE LOGIN -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center login-right">
+
+            <div class="login-card">
+
+                <h3 class="text-center mb-4">
+                    Sign In
+                </h3>
+
+                <!-- Error -->
+                <div th:if="${error}" class="alert alert-danger">
+                    <span th:text="${error}"></span>
+                </div>
+
+                <form th:action="@{/login}" method="post" id="loginForm">
+
+                    <!-- EMAIL -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="email" name="username" id="email" tH:value="${email}" class="form-control input-animated" required>
+                        <label>Email Address</label>
+                        <div class="invalid-feedback">Please enter valid email.</div>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="password" name="password" id="password" class="form-control input-animated" required>
+                        <label>Password</label>
+                        <i class="bi bi-eye-slash password-toggle" onclick="togglePassword()"></i>
+                        <!-- Strength -->
+                        <div class="password-strength mt-2">
+                            <div id="strengthBar"></div>
+                        </div>
+                    </div>
+
+                    <!-- REMEMBER + FORGOT -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <input type="checkbox" name="remember-me">
+                            <small>Remember me</small>
+                        </div>
+                        <a th:href="@{/forgot-password}">
+                            Forgot Password?
+                        </a>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-login w-100 mb-3">
+                        Login
+                    </button>
+
+                </form>
+
+                <!-- SOCIAL -->
+                <div class="text-center mb-3">
+                    <small>Or continue with</small>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-social google">
+                        <i class="bi bi-google"></i>
+                    </button>
+                    <button class="btn btn-social facebook">
+                        <i class="bi bi-facebook"></i>
+                    </button>
+                </div>
+
+                <div class="text-center mt-4">
+                    <small>
+                        Don't have an account?
+                        <a th:href="@{/register}">Register</a>
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+/* Toggle Password */
+function togglePassword(){
+    const input = document.getElementById("password");
+    const icon = document.querySelector(".password-toggle");
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+}
+
+/* Password Strength */
+document.getElementById("password").addEventListener("input", function(){
+    const val = this.value;
+    const bar = document.getElementById("strengthBar");
+
+    let strength = 0;
+    if(val.length > 5) strength++;
+    if(/[A-Z]/.test(val)) strength++;
+    if(/[0-9]/.test(val)) strength++;
+    if(/[^A-Za-z0-9]/.test(val)) strength++;
+
+    const width = strength * 25;
+    bar.style.width = width + "%";
+
+    if(width < 50){
+        bar.style.background = "red";
+    } else if(width < 75){
+        bar.style.background = "orange";
+    } else {
+        bar.style.background = "green";
+    }
+});
+
+/* Email Validation */
+document.getElementById("loginForm").addEventListener("submit", function(e){
+    const email = document.getElementById("email");
+    if(!email.checkValidity()){
+        email.classList.add("is-invalid");
+        e.preventDefault();
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>My Cart</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<style>
+		body {
+			background: #f4f6f9;
+		}
+
+		.summary-box {
+			background: white;
+			padding: 25px;
+			border-radius: 15px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container mt-4">
+
+		<h2>Shopping Cart</h2>
+		<div th:if="${cart == null or #lists.size(cart.items) == 0}" 
+		     class="text-center mt-5">
+
+		    <h4>Your cart is empty 🛒</h4>
+		    <p class="text-muted">Looks like you haven’t added anything yet.</p>
+		</div>
+		<a href="/customer/products" class="btn btn-secondary mb-3">
+		    ← Continue Shopping
+		</a>
+		<!-- Flash Messages -->
+		<div th:if="${success}" 
+		     class="alert alert-success alert-dismissible fade show" role="alert">
+		    <span th:text="${success}"></span>
+		    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+
+		<div th:if="${error}" 
+		     class="alert alert-danger alert-dismissible fade show" role="alert">
+		    <span th:text="${error}"></span>
+		    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+		<div th:if="${cart != null and #lists.size(cart.items) > 0}">
+			<table class="table table-bordered mt-3">
+			<thead>
+				<tr>
+					<th>Product</th>
+					<th>Price</th>
+					<th>Quantity</th>
+					<th>Total</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="item : ${cart.items}">
+
+					<td th:text="${item.product.name}"></td>
+
+					<td>₹ <span th:text="${item.product.price}"></span></td>
+
+					<td>
+						<form th:action="@{'/customer/cart/update/' + ${item.id}}" method="post">
+							<input type="number" name="quantity" th:value="${item.quantity}" min="1"
+								style="width:80px;">
+							<button class="btn btn-sm btn-primary">Update</button>
+						</form>
+					</td>
+
+					<td>
+						₹ <span th:text="${item.product.price * item.quantity}"></span>
+					</td>
+
+					<td>
+						<a th:href="@{'/customer/cart/remove/' + ${item.id}}" class="btn btn-danger btn-sm">
+							Remove
+						</a>
+					</td>
+
+				</tr>
+			</tbody>
+
+		</table>
+
+		<div class="summary-box text-end">
+
+			<h4>
+				Total:
+				₹ <span th:text="${cartTotal}"></span>
+			</h4>
+
+			<a href="/customer/payment/checkout" class="btn btn-success">
+				Proceed to Checkout
+			</a>
+
+		</div>
+
+	</div>
+</body>
+
+</html>

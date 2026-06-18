@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register | E-Shop</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="login-body">
+
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+
+        <!-- LEFT SIDE -->
+        <div class="col-lg-6 d-none d-lg-flex login-left">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bold mb-4 animate-slide">
+                    Join E-Shop 🚀
+                </h1>
+                <p class="lead">
+                    Create your account and start shopping today.
+                </p>
+                <i class="bi bi-cart-check-fill display-1 mt-4"></i>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE REGISTER -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center login-right">
+
+            <div class="login-card">
+
+                <h3 class="text-center mb-4">
+                    Create Account
+                </h3>
+
+                <form th:action="@{/register}"
+                      th:object="${user}"
+                      method="post"
+                      id="registerForm">
+
+                    <!-- FULL NAME -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="text"
+                               th:field="*{fullName}"
+                               id="fullName"
+                               class="form-control input-animated"
+                               required>
+                        <label>Full Name</label>
+                    </div>
+
+                    <!-- EMAIL -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="email"
+                               th:field="*{email}"
+                               id="email"
+                               class="form-control input-animated"
+                               required>
+                        <label>Email Address</label>
+                        <div class="invalid-feedback">
+                            Invalid email format
+                        </div>
+                    </div>
+
+                    <!-- PHONE -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="text"
+                               th:field="*{phone}"
+                               class="form-control input-animated">
+                        <label>Phone Number</label>
+                    </div>
+
+                    <!-- ADDRESS -->
+                    <div class="form-group mb-3 position-relative">
+                        <textarea th:field="*{address}"
+                                  class="form-control input-animated"
+                                  style="height: 80px"></textarea>
+                        <label>Address</label>
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="password"
+                               th:field="*{password}"
+                               id="password"
+                               class="form-control input-animated"
+                               required>
+                        <label>Password</label>
+
+                        <i class="bi bi-eye-slash password-toggle"
+                           onclick="togglePassword('password', this)"></i>
+
+                        <div class="password-strength mt-2">
+                            <div id="strengthBar"></div>
+                        </div>
+                    </div>
+
+                    <!-- CONFIRM PASSWORD -->
+                    <div class="form-group mb-3 position-relative">
+                        <input type="password"
+                               id="confirmPassword"
+                               class="form-control input-animated"
+                               required>
+                        <label>Confirm Password</label>
+
+                        <i class="bi bi-eye-slash password-toggle"
+                           onclick="togglePassword('confirmPassword', this)"></i>
+
+                        <small id="matchText"></small>
+                    </div>
+
+                    <!-- ROLE (Hidden default CUSTOMER) -->
+                    <input type="hidden"
+                           th:field="*{role}"
+                           value="CUSTOMER"/>
+
+                    <!-- TERMS -->
+                    <div class="mb-3">
+                        <input type="checkbox" id="terms" required>
+                        <small>
+                            I agree to the Terms & Conditions
+                        </small>
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-login w-100">
+                        Register
+                    </button>
+
+                </form>
+
+                <div class="text-center mt-4">
+                    <small>
+                        Already have an account?
+                        <a th:href="@{/login}">
+                            Login
+                        </a>
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+/* Toggle password */
+function togglePassword(id, icon){
+    const input = document.getElementById(id);
+
+    if(input.type === "password"){
+        input.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+}
+
+/* Password strength */
+document.getElementById("password").addEventListener("input", function(){
+    const val = this.value;
+    const bar = document.getElementById("strengthBar");
+
+    let strength = 0;
+    if(val.length > 5) strength++;
+    if(/[A-Z]/.test(val)) strength++;
+    if(/[0-9]/.test(val)) strength++;
+    if(/[^A-Za-z0-9]/.test(val)) strength++;
+
+    const width = strength * 25;
+    bar.style.width = width + "%";
+
+    if(width < 50){
+        bar.style.background = "red";
+    } else if(width < 75){
+        bar.style.background = "orange";
+    } else {
+        bar.style.background = "green";
+    }
+});
+
+/* Confirm password match */
+document.getElementById("confirmPassword").addEventListener("input", function(){
+    const pass = document.getElementById("password").value;
+    const confirm = this.value;
+    const text = document.getElementById("matchText");
+
+    if(confirm.length === 0){
+        text.innerHTML = "";
+    } else if(pass === confirm){
+        text.innerHTML = "✔ Passwords match";
+        text.style.color = "green";
+    } else {
+        text.innerHTML = "✖ Passwords do not match";
+        text.style.color = "red";
+    }
+});
+
+/* Email validation + password match check */
+document.getElementById("registerForm").addEventListener("submit", function(e){
+
+    const email = document.getElementById("email");
+    const pass = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if(!email.checkValidity()){
+        email.classList.add("is-invalid");
+        e.preventDefault();
+    }
+
+    if(pass !== confirm){
+        alert("Passwords do not match!");
+        e.preventDefault();
+    }
+});
+</script>
+
+</body>
+</html>

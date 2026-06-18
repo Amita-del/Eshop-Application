@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Already Logged In</title>
+
+	```
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+			height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.container {
+			background: white;
+			padding: 40px;
+			width: 480px;
+			text-align: center;
+			border-radius: 12px;
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+			animation: fadeIn 0.6s ease-in-out;
+		}
+
+		h1 {
+			color: #28a745;
+			font-size: 40px;
+			margin-bottom: 10px;
+		}
+
+		h2 {
+			color: #333;
+			margin-bottom: 15px;
+		}
+
+		p {
+			color: #666;
+			font-size: 16px;
+			margin-bottom: 25px;
+		}
+
+		.btn {
+			text-decoration: none;
+			padding: 12px 22px;
+			border-radius: 6px;
+			margin: 5px;
+			display: inline-block;
+			font-weight: bold;
+			transition: 0.3s;
+		}
+
+		.dashboard {
+			background: #007bff;
+			color: white;
+		}
+
+		.dashboard:hover {
+			background: #0056b3;
+		}
+
+		.logout {
+			background: #dc3545;
+			color: white;
+		}
+
+		.logout:hover {
+			background: #b52a37;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-20px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	</style>
+	```
+
+</head>
+
+<body>
+
+	<div class="container">
+
+		```
+		<h1>✔</h1>
+
+		<h2>You Are Already Logged In</h2>
+
+		<p>
+			It looks like you already have an active session.
+			You cannot access the login page again while logged in.
+		</p>
+		<a th:if="${#strings.equals(session.loggedUser.role,'ADMIN')}" href="/admin/products" class="btn dashboard">
+			Go to Dashboard
+	    </a>
+		<a th:if="${#strings.equals(session.loggedUser.role,'CUSTOMER')}" href="/customer/products" class="btn dashboard">
+		    Go to Dashboard
+		</a>
+		<a href="/login/logout" class="btn logout">Logout</a>
+	</div>
+
+</body>
+
+</html>
